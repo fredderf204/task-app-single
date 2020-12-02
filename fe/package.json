@@ -1,0 +1,16 @@
+{
+  "name": "taskfeejs",
+  "version": "1.0.0",
+  "description": "task app front end",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "michael friedrich",
+  "license": "ISC",
+  "dependencies": {
+    "ejs": "^3.1.5",
+    "express": "^4.17.1"
+  }
+}

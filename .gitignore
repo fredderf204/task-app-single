@@ -1,0 +1,7 @@
+api/.vscode/
+api/dev.env
+fe/.vscode/
+fe/node_modules/
+deploy/terraform/.terraform/
+deploy/terraform/*.tfstate
+deploy/terraform/*.tfstate.*

@@ -1,0 +1,398 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Tasks</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script type="text/javascript" src="https://alcdn.msauth.net/lib/1.2.0/js/msal.js" integrity="sha384-LSjD9o5MhT3UejOHZ5BJrlAp3TxNM6z68DPYw3o7Q3ApJviS9kOGP0oQyTaJJd9O" crossorigin="anonymous"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.4.1.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css">
+    <style>
+        .hidden {
+          visibility: hidden
+        }
+    
+        .visible {
+          visibility: visible
+        }
+    </style>
+</head>
+
+<body>
+    <!-- NavBar -->
+    <div>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="#"><%= title %></a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02"
+                aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </nav>
+    </div>
+
+    <!-- Table -->
+    <div align="center" style="padding-top: 10px">
+        <h1>My Tasks</h1>
+    </div>
+    <div id="tasktablesection">
+        <div class="row" style="padding-bottom: 10px; padding-top: 10px">
+            <div class="col-md-2"></div>
+            <div class="col-md-8">
+                <div class="table-responsive-sm" id="tasktable">
+                    <table id="tasks_table" class="table table-striped" data-sort-name="Duedate" data-sort-order="desc">
+                        <tr>
+                            <th id="ID" data-field="ID" data-sortable="true">ID</th>
+                            <th data-field="Title" data-sortable="true">Title</th>
+                            <th data-field="Description" data-sortable="true">Description</th>
+                            <th data-field="Duedate" data-sortable="true">Duedate</th>
+                            <th data-field="Completed" data-sortable="true">Completed</th>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="col-md-2"></div>
+        </div>
+    </div>
+
+    <!-- New Task Button -->
+    <div class="text-center">
+        <button type="button" class="btn btn-primary" id='newtaskbutton' data-toggle="modal" data-target="#NewTaskModal"
+            data-whatever="@getbootstrap">New Task</button>
+    </div>
+
+    <!-- New Task Modal -->
+    <div class="modal fade" id="NewTaskModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">New Task</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="newTask" method="post">
+                        <div class="form-group">
+                            <label for="task-title" class="col-form-label">Title:</label>
+                            <input type="text" class="form-control" id="task-title" name="title"
+                                placeholder="Insert awesome title">
+                        </div>
+                        <div class="form-group">
+                            <label for="task-description" class="col-form-label">Description:</label>
+                            <textarea class="form-control" id="task-description" name="description"
+                                placeholder="Insert descriptive description!"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label" for="date">Due Date:</label>
+                            <input class="form-control" id="date" name="duedate" placeholder="yyyy-mm-dd" type="text" />
+                        </div>
+                        <div class="text-right">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary" id="createtask">Create</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Task Modal -->
+    <div class="modal fade" id="EditTaskModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel1"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="edit-modal-title" id="EditTaskTitle">Edit Task</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="EditTask" method="post">
+                        <div class="form-group">
+                            <label for="task-title" class="col-form-label">Title:</label>
+                            <input type="text" class="form-control" id="edittask-title" name="title">
+                        </div>
+                        <div class="form-group">
+                            <label for="task-description" class="col-form-label">Description:</label>
+                            <textarea class="form-control" id="edittask-description" name="description"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label" for="date">Due Date:</label>
+                            <input class="form-control" id="edittask-date" name="duedate" type="text" />
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Completed?</label>
+                            <input type="checkbox" id="edittask-complete" name="complete" />
+                        </div>
+                        <div class="text-right">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary" id="edittask">Save</button>
+                            <button type="submit" class="btn btn-danger" id="deletetask">Delete</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="page-footer font-small blue">
+        <div class="footer-copyright text-center py-3">@2020
+            <a href="https://www.linkedin.com/in/1michaelfriedrich" target="_blank"> Michael Friedrich</a>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <pre class="response"></pre>
+
+    <script class="pre">
+  
+      // The current application coordinates were pre-registered in a B2C tenant.
+      var appConfig = {
+        b2cScopes: ["https://mfsaasdemo.onmicrosoft.com/e1368831-c0e6-4b8e-b2e9-f62280067d30/Files.Read"]
+      };
+  
+    </script>
+  
+    <script>
+      "use strict";
+
+        // configuration to initialize msal
+        const msalConfig = {
+            auth: {
+                clientId: "e1368831-c0e6-4b8e-b2e9-f62280067d30", //This is your client ID
+                authority: "https://mfsaasdemo.b2clogin.com/mfsaasdemo.onmicrosoft.com/B2C_1_signin", //This is your tenant info
+                validateAuthority: false
+            },
+            cache: {
+                cacheLocation: "localStorage",
+                storeAuthStateInCookie: true
+            }
+        };
+
+        // instantiate MSAL
+        const myMSALObj = new Msal.UserAgentApplication(msalConfig);
+
+        // request to signin - returns an idToken
+        const loginRequest = {
+            scopes: appConfig.b2cScopes
+        };
+
+        // request to acquire a token for resource access
+        const tokenRequest = {
+            scopes: appConfig.b2cScopes
+        };
+
+        // debug helper
+        function logMessage(s) {
+        document.body.querySelector('.response').appendChild(document.createTextNode('\n' + s));
+        }
+
+        // signin and acquire a token silently with POPUP flow. Fall back in case of failure with silent acquisition to popup
+        function signIn() {
+            myMSALObj.loginPopup(loginRequest).then(function (loginResponse) {
+                getToken(tokenRequest).then(updateUI);
+            }).catch(function (error) {
+                logMessage(error);
+            });
+        }
+
+        //acquire a token silently
+        function getToken(tokenRequest) {
+            return myMSALObj.acquireTokenSilent(tokenRequest).catch(function(error) {
+            console.log("aquire token popup");
+            // fallback to interaction when silent call fails
+            return myMSALObj.acquireTokenPopup(tokenRequest).then(function (tokenResponse) {
+            }).catch(function(error){
+                logMessage("Failed token acquisition", error);
+            });
+        });
+        }
+
+        // updates the UI post login/token acqusition
+        function updateUI() {
+            // add table and new task button
+            Gettasks();
+            const tasktablesection = document.getElementById('tasktablesection');
+            tasktablesection.setAttribute('class', 'visible');
+
+            // remove login buttion
+            const loginbutton = document.getElementById('auth');
+            loginbutton.setAttribute('class', 'hidden');
+
+            // add new task button
+            const newtaskbutton = document.getElementById('newtaskbutton');
+            newtaskbutton.setAttribute('class', 'visible');
+
+            // add logoff button
+
+
+            // add username
+            const userName = myMSALObj.getAccount().name;
+            document.getElementById("navbarText").innerHTML = userName;
+        };
+
+        // signout the user
+        function logout() {
+            // Removes all sessions, need to call AAD endpoint to do full logout
+            myMSALObj.logout();
+        };
+
+        var apiendpoint = '<%= apiaddress %>';
+
+        function Gettasks() {
+            var urla = apiendpoint + '/all'
+            $.ajax({
+                url: urla,
+                headers: {
+                    'tenant': '<%= tenantid %>',
+                     },
+                data: "{}",
+                dataType: "json",
+                success: function (data) {
+                    $.each(data, function (i, item) {
+                        var $tr = $('<tr data-toggle="modal" data-id="' + item.ID + '" data-target="#EditTaskModal">').append(
+                            $('<td class="taskid">').text(item._id.$oid),
+                            $('<td class="tasktitle">').text(item.title),
+                            $('<td class="taskdes">').text(item.description),
+                            $('<td class="taskdate">').text(item.duedate),
+                            $('<td class="taskcomp">').text(item.completed),
+                        ).appendTo('#tasks_table');
+                    })
+                }
+            })
+        }
+
+        $(document).ready(function () {
+            //Enable date picker
+            var date_input = $('input[name="duedate"]'); //our date input has the name "date"
+            var container = $('.bootstrap-iso form').length > 0 ? $('.bootstrap-iso form').parent() : "body";
+            var options = {
+                format: 'yyyy-mm-dd',
+                container: container,
+                todayHighlight: true,
+                autoclose: true,
+                orientation: 'bottom'
+            };
+            date_input.datepicker(options);
+
+            Gettasks()
+
+            //Create Task
+            $("#createtask").click(function (e) {
+                event.preventDefault();
+                //getToken(tokenRequest).then(function(tokenResponse) {
+                    $.ajax({
+                        type: "POST",
+                        url: apiendpoint,
+                        dataType: 'text',
+                        headers: {
+                            'tenant': '<%= tenantid %>',
+                        },
+                        data: $("#newTask").serialize(),
+                        success: function (data) {
+                            location.reload(true);
+                        }
+                    });
+                //});
+                $('#NewTaskModal').modal('hide');
+            });
+        })
+
+        function GettasksWithAccessToken(accessToken) {
+        $.ajax({
+                url: apiendpoint,
+                data: "{}",
+                dataType: "json",
+                success: function (data) {
+                    $.each(data, function (i, item) {
+                        var $tr = $('<tr data-toggle="modal" data-id="' + item.ID + '" data-target="#EditTaskModal">').append(
+                            $('<td class="taskid">').text(item.ID),
+                            $('<td class="tasktitle">').text(item.Title),
+                            $('<td class="taskdes">').text(item.Description),
+                            $('<td class="taskdate">').text(item.Duedate),
+                            $('<td class="taskcomp">').text(item.Completed),
+                        ).appendTo('#tasks_table');
+                    })
+                }
+            });
+        }
+
+        //reload page on modal close
+        $('#EditTaskModal').on('hidden.bs.modal', function () {
+            location.reload();
+        })
+
+        //Edit Task Display
+        $('#EditTaskModal').on('shown.bs.modal', function (e) { //subscribe to show method
+            e.preventDefault();
+            var invoker = $(e.relatedTarget);
+            var id = $(invoker[0]).find('.taskid')[0];
+            var title = $(invoker[0]).find('.tasktitle')[0];
+            var des = $(invoker[0]).find('.taskdes')[0];
+            var date = $(invoker[0]).find('.taskdate')[0];
+            var comp = $(invoker[0]).find('.taskcomp')[0];
+            var idtext = $(id).text();
+            var titletext = $(title).text();
+            var destext = $(des).text();
+            var datetext = $(date).text();
+            var comptext = $(comp).text();
+            console.log(idtext);
+            $(" #edittask-title").val(titletext);
+            $(" #edittask-description").val(destext);
+            $(" #edittask-date").val(datetext);
+            $(" #edittask-complete").val(comptext);
+
+            //Edit Task Save
+            $("#edittask").click(function (e) {
+                event.preventDefault();
+                //getToken(tokenRequest).then(function(tokenResponse) {
+                var urle = apiendpoint + '?id=' + idtext;
+                    $.ajax({
+                        type: "PUT",
+                        url: urle,
+                        dataType: 'text',
+                        headers: {
+                            'tenant': '<%= tenantid %>',
+                        },
+                        data: $("#EditTask").serialize(),
+                        success: function (data) {
+                            location.reload(true);
+                        }
+                    });
+                //});
+                $('#EditTaskModal').modal('hide');
+            });
+
+            //Delete Task
+            $("#deletetask").click(function (e) {
+                event.preventDefault();
+                //getToken(tokenRequest).then(function(tokenResponse) {
+                var urld = apiendpoint + '?id=' + idtext
+                $.ajax({
+                    type: "DELETE",
+                    url: urld,
+                    dataType: 'text',
+                    headers: {
+                        'tenant': '<%= tenantid %>',
+                    },
+                    success: function (data) { 
+                        location.reload(true);
+                    }
+                    });
+                //});
+            $('#EditTaskModal').modal('hide');
+        });
+    });
+    </script>
+</body>
+
+</html>
