@@ -5,3 +5,4 @@ fe/node_modules/
 deploy/terraform/core/.terraform/
 deploy/terraform/core/*.tfstate
 deploy/terraform/core/*.tfstate.*
+deploy/terraform/core/plugins/
